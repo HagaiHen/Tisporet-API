@@ -1,0 +1,27 @@
+{
+  "name": "tisporet-api",
+  "version": "1.0.0",
+  "description": "express REST api for TISPORET",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bargoldenberg/Tisporet-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bargoldenberg/Tisporet-API/issues"
+  },
+  "homepage": "https://github.com/bargoldenberg/Tisporet-API#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase": "8.10.1",
+    "nodemon": "^2.0.20"
+  }
+}
