@@ -1,13 +1,13 @@
 const express = require('express');
 const {
-    newUser,
-    getUser  
+    newCustomer,
+    getCustomer  
 } = require('../controllers/customerController');
 
 const router = express.Router();
 
-router.post('/user', newUser);//write
-router.get('/user/:id', getUser);//read
+router.post('/user', newCustomer);//write
+router.get('/user/:id', getCustomer);//read
 
 
 module.exports = {

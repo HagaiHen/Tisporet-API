@@ -2,14 +2,14 @@
 const db = require('../db')
 
 
-const newUser = async (req, res, next) => {
+const newCustomer = async (req, res, next) => {
     try {
         const data = req.body;
         console.log(data);
-        await db.collection("Users")
+        await db.collection("Customers")
         .doc(data.userId)
         .set(data);
-        res.send('User added successfully');
+        res.send('Customer added successfully');
     } catch(error){
         res.status(400).send(`${error.message}`);
 
@@ -21,11 +21,11 @@ const newUser = async (req, res, next) => {
  * @param {*} uid
  * @returns
  */
-const getUser = async (req, res, next) => {
+const getCustomer = async (req, res, next) => {
     const uid = req.params.id
     try{
         const userData = await db
-            .collection("Users")
+            .collection("Customers")
             .doc(uid)
             .get(); 
         res.send(userData.data())
@@ -36,6 +36,6 @@ const getUser = async (req, res, next) => {
 };
 
 module.exports ={
-    newUser,
-    getUser
+    newCustomer,
+    getCustomer
 }

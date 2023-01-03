@@ -15,7 +15,7 @@ router.post('/order',newOrder);
 router.get('/orderByBarber/:id',getBarberOrders);
 router.get('/orderCustomer/:id',getCustomerOrders);
 router.get('/availableAppointments/:id/:date',getAvailableAppointments);
-router.post('/deleteOrder/', deleteOrder)
+router.post('/deleteOrder', deleteOrder)
 
 
 module.exports = {

@@ -18,12 +18,12 @@ const newOrder = async (req, res, next) => {
       } else {
         await db.collection("Orders").add({
             barberId: _chosenBarber,
-            Customer_id: req.body.userId,
-            date: _selectedDate,
-            time: _hour,
+            customerId: req.body.customerId,
+            orderDate: _selectedDate,
+            orderHour: _hour,
             extra_info: "",
-            cus_name: req.body.costumerName,
-            barber_name: req.body.barberName
+            customerName: req.body.customerName,
+            barberName: req.body.barberName
             })
             .then(() => {
               res.send(true);
@@ -40,7 +40,7 @@ const getBarberOrders = async (req, res, next) => {
     let orders = {};
     await db.collection("Orders").get().then((querySnapshot) => {
       querySnapshot.forEach((documentSnapshot) => {
-        const isActive = documentSnapshot.data().date >= moment(new Date()).format("YYYY-MM-DD");
+        const isActive = documentSnapshot.data().orderDate >= moment(new Date()).format("YYYY-MM-DD");
         const isUsersOrder = documentSnapshot.data().barberId === uid;        
         if (isActive && isUsersOrder) {
           orders[documentSnapshot.id] = documentSnapshot.data();
@@ -50,6 +50,7 @@ const getBarberOrders = async (req, res, next) => {
       .catch((err) => {
         res.status(400).send(err.message);
       });
+    console.log(orders)
     res.send(orders); 
 };
 
@@ -64,8 +65,8 @@ const getCustomerOrders = async (req, res, next) => {
     let orders = {};
     await db.collection("Orders").get().then((querySnapshot) => {
       querySnapshot.forEach((documentSnapshot) => {
-        const isActive = documentSnapshot.data().date >= moment(new Date()).format("YYYY-MM-DD");
-        const isUsersOrder = documentSnapshot.data().Customer_id === uid;      
+        const isActive = documentSnapshot.data().orderDate >= moment(new Date()).format("YYYY-MM-DD");
+        const isUsersOrder = documentSnapshot.data().customerId === uid;      
         if (isActive && isUsersOrder) {
           orders[documentSnapshot.id] = documentSnapshot.data();
         }
@@ -74,6 +75,7 @@ const getCustomerOrders = async (req, res, next) => {
       .catch((err) => {
         res.status(400).send(err.message);
       });
+    console.log(orders);
     res.send(orders); 
 };
 
