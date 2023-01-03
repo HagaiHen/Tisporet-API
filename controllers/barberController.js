@@ -21,13 +21,13 @@ const updateBarberWorkingDays = async (req, res, next) => {
         .collection("Barbers")
         .doc(uid)
         .update({
-          availableWorkHours: data.WorkingDays,
+          availableWorkHours: data,
         })
         .then(() => {
           res.send("Barber N." + uid + " appointments updated!");
         });
     } catch (error) {
-      res.status(400).send(err.message);
+      res.status(400).send(error.message);
     }
 }
 
@@ -88,14 +88,34 @@ const getBarberList = async (req, res, data) => {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((documentSnapshot) => {
-          const uid = documentSnapshot.data().userId;
-          const name = documentSnapshot.data().userName;
-          barbers.push({ label: name, value: uid });
+          if (documentSnapshot.data().availableWorkHours) {
+            const uid = documentSnapshot.data().userId;
+            const name = documentSnapshot.data().userName;
+            barbers.push({ label: name, value: uid });
+          }
         });
       })
       .catch((err) => {
         res.status(400).send(`error while geting barbers: ${err.message}`);
       });
+    res.send(barbers);
+};
+
+const getBarbersData = async (req, res, data) => {
+  let barbers = [];
+  await db
+    .collection("Barbers")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((documentSnapshot) => {
+        if (documentSnapshot.data().availableWorkHours) {
+        barbers.push(documentSnapshot.data());
+        }
+      });
+    })
+    .catch((err) => {
+      res.status(400).send(`error while geting barbers data: ${err.message}`);
+    });
     res.send(barbers);
 };
 
@@ -106,5 +126,6 @@ module.exports = {
     getBarberWorkingDays, 
     getBarber,
     updateFirstEntry,
-    getBarberList
+    getBarberList,
+    getBarbersData
 }
