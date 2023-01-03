@@ -77,9 +77,21 @@ const getCustomerOrders = async (req, res, next) => {
     res.send(orders); 
 };
 
+/**
+ * function for returning the 
+ * @param {*} uid 
+ * @returns 
+ */
+const getBarber = async (uid) => {
+  const userData = await db.collection("Barbers").doc(uid).get().catch((err) => {
+    throw Error(err);
+  });
+  return userData.data();
+};
 
 /**
- * NEED TO BE TESTED WITH GETBARBER FUNCTION
+ * function for getting the available appointments -> so you wont set two appointments on the same day. 
+ * It's using the getBarber helper, which returns the barbers details.
  */
 const getAvailableAppointments = async (req, res, next) => {
   const date = req.params.date;
@@ -166,6 +178,7 @@ const checkIfOrderExists = async (_chosenBarber, _selectedDate, _hour) => {
     return exists
 
 };
+
 
 module.exports = {
     newOrder,
