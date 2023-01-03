@@ -11,7 +11,7 @@ const newUser = async (req, res, next) => {
         .set(data);
         res.send('User added successfully');
     } catch(error){
-        res.status(400).send(error.message);
+        res.status(400).send(` customer 14 ${error.message}`);
 
     }}
         
@@ -28,12 +28,9 @@ const getUser = async (req, res, next) => {
             .collection("Users")
             .doc(uid)
             .get(); 
-        res.send(userData.data());
-
-           
+        res.send(userData.data())
     } catch (error){
-        res.status(400).send(error.message);
-
+        res.status(400).send(`customer 33 ${error.message}`);
     }
     
 };
