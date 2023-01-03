@@ -4,8 +4,7 @@ const {
         getBarberOrders,
         getCustomerOrders,
         getAvailableAppointments,
-        deleteOrder,
-        checkIfOrderExists
+        deleteOrder
 } =  require('../controllers/orderController');
 
 const router = express.Router();
@@ -13,9 +12,10 @@ const router = express.Router();
 
 
 router.post('/order',newOrder);
-router.get('/order/barber/:id',getBarberOrders);
-router.get('/order/customer/:id',getCustomerOrders);
-router.get('/order/Available',getAvailableAppointments);
+router.get('/orderByBarber/:id',getBarberOrders);
+router.get('/orderCustomer/:id',getCustomerOrders);
+router.get('/orderAvailable/:id/:date',getAvailableAppointments);
+router.post('/deleteOrder/', deleteOrder)
 
 
 module.exports = {

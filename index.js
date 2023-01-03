@@ -6,6 +6,7 @@ const config = require('./config');
 const barberRoutes = require('./routes/barber-routes');
 const orderRoutes = require('./routes/order-routes');
 const app = express();
+require = require('moment')
 
 app.use(express.json());
 app.use(cors());
