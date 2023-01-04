@@ -1,5 +1,5 @@
 'use strict';
-const db = require('../db')
+const {db} = require('../db')
 
 const addBarber = async (req, res, next) =>{
     try{
@@ -77,8 +77,8 @@ const updateFirstEntry = async (req, res, data) => {
             firstEntry: false,
         })
         .then(() => {
-        res.send("Barber N.", uid, " First entry updated!");
-        });
+        res.send(JSON.stringify('Success'));
+        }).catch((err)=>{res.status(400).send(err.message)});
 };
 
 const getBarberList = async (req, res, data) => {

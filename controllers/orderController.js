@@ -1,5 +1,5 @@
 'use strict';
-const db = require('../db')
+const {db} = require('../db')
 var moment = require('moment') // JS time module (run npm install moment in this project in order to make it work). 
 
 /**
