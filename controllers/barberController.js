@@ -31,6 +31,26 @@ const updateBarberWorkingDays = async (req, res, next) => {
     }
 }
 
+const updateBarberAddress = async (req, res, next) => {
+  try {
+    const uid = req.params.id;
+    const address = req.body.BarberAddress;
+    const info = req.body.BarberInfo;
+    await db
+      .collection("Barbers")
+      .doc(uid)
+      .update({
+        BarberAddress: address,
+        BarberInfo: info
+      })
+      .then(() => {
+        res.send("Barber N." + uid + " Address & info updated!");
+      });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+}
+
 const getBarberWorkingDays = async (req, res, next) => {
     const uid = req.params.id;
     var ans = [];
@@ -127,5 +147,6 @@ module.exports = {
     getBarber,
     updateFirstEntry,
     getBarberList,
-    getBarbersData
+    getBarbersData,
+    updateBarberAddress
 }
