@@ -1,7 +1,10 @@
 "use strict";
 const { db } = require("../db");
 var moment = require("moment"); // JS time module (run npm install moment in this project in order to make it work).
-const { sendMailToWaitlistCustomer } = require("./mailController");
+const {
+  sendMailToWaitlistCustomer,
+  sendMailController,
+} = require("./mailController");
 const { getCustomerFromDB } = require("./customerController");
 
 /**
@@ -147,6 +150,29 @@ const getAvailableAppointments = async (req, res, next) => {
   }
 };
 
+const sendDeleted = async (orderId) => {
+  let order = await db.collection('Orders').doc(orderId).get();
+  order = order.data();
+  console.log(156, order);
+  const barberId = order.barberId;
+  const customerId = order.customerId;
+  let barberEmail = await db.collection('Barbers').doc(barberId).get();
+  barberEmail = barberEmail.data().userEmail;
+  let customerEmail = await db.collection('Customers').doc(customerId).get();
+  customerEmail = customerEmail.data().userEmail; 
+  const customerBody = {
+    email: customerEmail,
+    body: `Hi!, your appointment on ${order.orderDate} at ${order.orderHour} has been canceled.`
+  }
+  const barberBody = {
+    email: barberEmail,
+    body: `Hi!, an appointment with ${customerEmail} on ${order.orderDate} at ${order.orderHour} has been canceled.`,
+  };
+  await sendMailController(customerBody);
+  await sendMailController(barberBody);
+
+} 
+
 /**
  * Function for connecting the DB, and delete an order by the order ID.
  * Post function, Getting back the error code in case of failure, 'Order Deleted!' as DR in case of success.
@@ -156,16 +182,19 @@ const deleteOrder = async (req, res, next) => {
   const barberId = req.body.barberId;
   const time = req.body.time;
   const key = req.body.key;
+  
   if (barberId && date && time && key) {
     await deleteFromWaitlist(key);
+    await sendDeleted(key);
     await db
       .collection("Orders")
       .doc(key)
       .delete()
       .then(() => {
+        //await sendDeleted(key);
         res.send("Order deleted!");
       })
-      .catch((err) => res.send("Delete Order not finished!, error:", err));
+      .catch((err) => res.send("Delete Order not finished!, error:", err.message));
   }
 };
 
@@ -235,7 +264,7 @@ const findWaitlistOrderOnDelete = async (req, res) => {
     .then((querySnapshot) => {
       querySnapshot.forEach(async (documentSnapshot) => {
         const docOrder = await getOrder(documentSnapshot.data().orderId);
-        if (docOrder.barberId === order.barberId) {
+        if (docOrder && docOrder.barberId === order.barberId) {
           const waitListCandidate = docOrder;
           const orderDate = waitListCandidate.orderDate;
           const orderTime = waitListCandidate.orderHour;

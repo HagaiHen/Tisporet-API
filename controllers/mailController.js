@@ -59,6 +59,6 @@ const sendMailController = async (payload) => {
   await transporter.sendMail(msg);
 };
 
-module.exports = { sendMail, sendMailToWaitlistCustomer };
+module.exports = { sendMail, sendMailToWaitlistCustomer, sendMailController };
 
     
