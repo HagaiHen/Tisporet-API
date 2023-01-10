@@ -278,7 +278,7 @@ const findWaitlistOrderOnDelete = async (req, res) => {
           const email = customer.userEmail;
           if (orderDate <= today && orderTime <= now) {
             documentSnapshot.delete();
-          } else if (date <= orderDate && time < orderTime) {
+          } else if ((date < orderDate) || (date <= orderDate && time < orderTime)) {
             await sendMailToWaitlistCustomer(
               documentSnapshot.data().orderId,
               newOrderId,
