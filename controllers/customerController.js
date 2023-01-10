@@ -31,13 +31,33 @@ const getCustomer = async (req, res, next) => {
     
 };
 
+const newReview = async (req, res, next) => {
+    
+    try {
+        const data = req.body;
+        const doc = await db.collection("Barbers").doc(data.barberId).get();
+        const reviewsList = doc.data().reviews;
+        reviewsList.push(data);
+        const review = await db.collection("Barbers")
+        .doc(data.barberId)
+        .update({
+            reviews: reviewsList
+        })
+        res.send('Customer added new Review successfully');
+    } catch(error){
+        res.status(400).send(`${error.message}`);
+
+    }}
+
 const getCustomerFromDB = async (uid) => {
      const userData = await db.collection("Customers").doc(uid).get(); 
      return userData.data();
 }
 
+
 module.exports ={
     newCustomer,
     getCustomer,
+    newReview
     getCustomerFromDB
 }

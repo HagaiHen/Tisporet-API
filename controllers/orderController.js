@@ -115,22 +115,25 @@ const getBarber = async (uid) => {
  * It's using the getBarber helper, which returns the barbers details.
  */
 const getAvailableAppointments = async (req, res, next) => {
+
   const date = req.params.date;
   const barberId = req.params.id;
+
   const unAvailableOrders = [];
   await db
     .collection("Orders")
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((documentSnapshot) => {
-        const onDate = documentSnapshot.data().date === date;
-        const isBarbers = documentSnapshot.data().BarberId === barberId;
+        const onDate = documentSnapshot.data().orderDate === date;
+        const isBarbers = documentSnapshot.data().barberId === barberId;
         if (onDate && isBarbers) {
-          unAvailableOrders.push(documentSnapshot.data().time);
+          unAvailableOrders.push(documentSnapshot.data().orderHour);
         }
       });
     })
     .catch((err) => res.status(400).send(err.message));
+  
   const availableHours = [];
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const day = days[new Date(date).getDay()];
