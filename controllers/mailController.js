@@ -9,7 +9,7 @@ const sendMail = async (req, res, next) => {
   try {
     await sendMailController({ email, body });
     res.send("Email sent!");
-  } catch (error) {
+  } catch (error) { 
     res.status(400).send(error.message);
   }
 };

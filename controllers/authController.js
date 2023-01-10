@@ -18,10 +18,12 @@ const signUp = async (req, res, next) => {
   let uid;
   await auth
     .createUserWithEmailAndPassword(email, password)
+    .then((user) => {
+      uid = user.user.uid;
+    })
     .catch((error) => {
-      res.status(400).send(`Sign up failed, error: ${error}`);
-    }).then((user)=>{
-        uid = user.user.uid;
+      console.log(error.message);
+      res.send({'error': 'true'});
     });
   console.log(uid);
   res.send(JSON.stringify(uid));

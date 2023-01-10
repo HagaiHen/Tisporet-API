@@ -58,6 +58,6 @@ const getCustomerFromDB = async (uid) => {
 module.exports ={
     newCustomer,
     getCustomer,
-    newReview
+    newReview,
     getCustomerFromDB
 }
