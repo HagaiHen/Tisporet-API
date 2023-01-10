@@ -237,10 +237,10 @@ const addOrderToWaitlist = async (req, res, next) => {
   await db
     .collection("WaitList")
     .doc(req.body.orderId)
-    .add({ orderId: req.body.orderId })
+    .set({ orderId: req.body.orderId })
     .catch((err) => {
       res.status(400).send(err.message);
-    });
+    });  
   res.send("Success");
 };
 
