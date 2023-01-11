@@ -309,7 +309,7 @@ const findWaitlistOrderOnDelete = async (req, res) => {
 };
 
 const updateAppointment = async (req, res) => {
-  const barberId = getOrder(req.params.oldOrder).barberId;
+  const barberId = (await getOrder(req.params.oldOrder)).barberId;
   const oldOrderId = req.params.oldOrder;
   const newDate = req.params.date;
   const newTime = req.params.time;
