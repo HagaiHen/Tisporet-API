@@ -26,7 +26,7 @@ const signUp = async (req, res, next) => {
     })
     .catch((error) => {
       console.log(error.message);
-      res.send({ error: "true" });
+      res.send({ error: error.message });
     });
   console.log(uid);
   res.send(JSON.stringify(uid));
