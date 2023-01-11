@@ -309,21 +309,27 @@ const findWaitlistOrderOnDelete = async (req, res) => {
 };
 
 const updateAppointment = async (req, res) => {
+  const barberId = getOrder(req.params.oldOrder).barberId;
   const oldOrderId = req.params.oldOrder;
   const newDate = req.params.date;
   const newTime = req.params.time;
-  await db
-    .collection("Orders")
-    .doc(oldOrderId)
-    .update({
-      orderDate: newDate,
-      orderHour: newTime,
-    })
-    .catch((err) => {
-      res.status(400).send(err.message);
-    });
-  await deleteFromWaitlist(oldOrderId);
-  res.send("You have successfully updated your appointment!");
+  const exists = await checkIfOrderExists(barberId, newDate, newTime);
+  if (!exists) {
+    await db
+      .collection("Orders")
+      .doc(oldOrderId)
+      .update({
+        orderDate: newDate,
+        orderHour: newTime,
+      })
+      .catch((err) => {
+        res.status(400).send(err.message);
+      });
+    await deleteFromWaitlist(oldOrderId);
+    res.send("You have successfully updated your appointment!");
+  } else {
+    res.send("Appoinment has already been taken.");
+  }
 };
 
 module.exports = {
