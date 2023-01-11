@@ -225,9 +225,9 @@ const checkIfOrderExists = async (_chosenBarber, _selectedDate, _hour) => {
     .then((querySnapshot) => {
       querySnapshot.forEach((documentSnapshot) => {
         if (
-          documentSnapshot.data().Barber_id === _chosenBarber &&
-          documentSnapshot.data().date === _selectedDate &&
-          documentSnapshot.data().time === _hour
+          documentSnapshot.data().barberId === _chosenBarber &&
+          documentSnapshot.data().orderDate === _selectedDate &&
+          documentSnapshot.data().orderHour === _hour
         ) {
           console.log("in Here");
           exists = true;
