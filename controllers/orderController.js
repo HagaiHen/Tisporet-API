@@ -115,7 +115,6 @@ const getBarber = async (uid) => {
  * It's using the getBarber helper, which returns the barbers details.
  */
 const getAvailableAppointments = async (req, res, next) => {
-
   const date = req.params.date;
   const barberId = req.params.id;
 
@@ -133,7 +132,7 @@ const getAvailableAppointments = async (req, res, next) => {
       });
     })
     .catch((err) => res.status(400).send(err.message));
-  
+
   const availableHours = [];
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const day = days[new Date(date).getDay()];
@@ -154,27 +153,26 @@ const getAvailableAppointments = async (req, res, next) => {
 };
 
 const sendDeleted = async (orderId) => {
-  let order = await db.collection('Orders').doc(orderId).get();
+  let order = await db.collection("Orders").doc(orderId).get();
   order = order.data();
   console.log(156, order);
   const barberId = order.barberId;
   const customerId = order.customerId;
-  let barberEmail = await db.collection('Barbers').doc(barberId).get();
+  let barberEmail = await db.collection("Barbers").doc(barberId).get();
   barberEmail = barberEmail.data().userEmail;
-  let customerEmail = await db.collection('Customers').doc(customerId).get();
-  customerEmail = customerEmail.data().userEmail; 
+  let customerEmail = await db.collection("Customers").doc(customerId).get();
+  customerEmail = customerEmail.data().userEmail;
   const customerBody = {
     email: customerEmail,
-    body: `Hi!, your appointment on ${order.orderDate} at ${order.orderHour} has been canceled.`
-  }
+    body: `Hi!, your appointment on ${order.orderDate} at ${order.orderHour} has been canceled.`,
+  };
   const barberBody = {
     email: barberEmail,
     body: `Hi!, an appointment with ${customerEmail} on ${order.orderDate} at ${order.orderHour} has been canceled.`,
   };
   await sendMailController(customerBody);
   await sendMailController(barberBody);
-
-} 
+};
 
 /**
  * Function for connecting the DB, and delete an order by the order ID.
@@ -185,7 +183,7 @@ const deleteOrder = async (req, res, next) => {
   const barberId = req.body.barberId;
   const time = req.body.time;
   const key = req.body.key;
-  
+
   if (barberId && date && time && key) {
     await deleteFromWaitlist(key);
     await sendDeleted(key);
@@ -197,14 +195,21 @@ const deleteOrder = async (req, res, next) => {
         //await sendDeleted(key);
         res.send("Order deleted!");
       })
-      .catch((err) => res.send("Delete Order not finished!, error:", err.message));
+      .catch((err) =>
+        res.send("Delete Order not finished!, error:", err.message)
+      );
   }
 };
 
-
 const deleteFromWaitlist = async (orderId) => {
-  await db.collection("WaitList").doc(orderId).delete().catch(err=>{console.log(err.message)});
-}
+  await db
+    .collection("WaitList")
+    .doc(orderId)
+    .delete()
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
 /**
  * This is a inner helper function for 'newOrder' function. it's goes to the DB and search if an order is exists by:
  * @param {*} _chosenBarber - the barber ID's as he appears on Firestore.
@@ -243,7 +248,7 @@ const addOrderToWaitlist = async (req, res, next) => {
     .set({ orderId: req.body.orderId })
     .catch((err) => {
       res.status(400).send(err.message);
-    });  
+    });
   res.send("Success");
 };
 
@@ -277,8 +282,14 @@ const findWaitlistOrderOnDelete = async (req, res) => {
           const name = customer.userName;
           const email = customer.userEmail;
           if (orderDate <= today && orderTime <= now) {
-            documentSnapshot.delete();
-          } else if ((date < orderDate) || (date <= orderDate && time < orderTime)) {
+            await db
+              .collection("WaitList")
+              .doc(documentSnapshot.data().orderId)
+              .delete();
+          } else if (
+            date < orderDate ||
+            (date <= orderDate && time < orderTime)
+          ) {
             await sendMailToWaitlistCustomer(
               documentSnapshot.data().orderId,
               newOrderId,

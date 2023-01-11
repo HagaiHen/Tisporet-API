@@ -6,7 +6,8 @@ const {
         getBarber,
         getBarberList,
         updateFirstEntry,
-        getBarbersData
+        getBarbersData,
+        updateBarberAddress
 } =  require('../controllers/barberController');
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.post('/barber/:id/workdays', updateBarberWorkingDays);
 router.get('/barber/:id/workdays', getBarberWorkingDays);
 router.post('/barber/:id/firstentry',updateFirstEntry);
 router.get('/barbersdata',getBarbersData);
+router.post('/barber/:id/address', updateBarberAddress);
 
 
 module.exports = {
