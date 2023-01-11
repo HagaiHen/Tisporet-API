@@ -1,15 +1,18 @@
 const { auth } = require("../db");
 
 const authenticate = async (req, res, next) => {
-  const uid = (
+  let uid = (
     await auth
       .signInWithEmailAndPassword(req.body.userEmail, req.body.userPassword)
       .catch((error) => {
-        res.status(400).send(`error while signing in, ${error}`);
+        res.send({ error: `error while signing in, ${error}` });
       })
-  ).user.uid;
-  await auth.signOut();
-  res.send(JSON.stringify(uid));
+  );
+  if(uid){
+    uid = uid.user.uid
+    await auth.signOut();
+    res.send(JSON.stringify(uid));
+  }
 };
 
 const signUp = async (req, res, next) => {
@@ -23,7 +26,7 @@ const signUp = async (req, res, next) => {
     })
     .catch((error) => {
       console.log(error.message);
-      res.send({'error': 'true'});
+      res.send({ error: "true" });
     });
   console.log(uid);
   res.send(JSON.stringify(uid));
